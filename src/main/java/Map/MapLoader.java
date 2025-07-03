@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class MapLoader {
@@ -77,10 +78,10 @@ public class MapLoader {
         for (int i=0; i<Row; i++){
             for (int j=0; j<Col; j++){
                 if((i+j)%2==0){
-                    gc.setFill(Color.GRAY);
+                    gc.setFill(Color.web("#769656"));
                 }
                 else{
-                    gc.setFill(Color.WHITE);
+                    gc.setFill(Color.web("#EEEED2"));
                 }
                 gc.fillRect(j*CellSize,i*CellSize,CellSize,CellSize);
             }
@@ -114,17 +115,23 @@ public class MapLoader {
         if(board.getBoardArray()[a[0]][a[1]].getClass()==Rook.class){
             piece=new Rook(board.getBoardArray()[a[0]][a[1]].isWhite(),a[0],a[1]);
         }
-        gc.setFill(Color.YELLOW);
+        gc.setFill(Color.web("#f7ec65"));
         gc.fillRect(a[1]*CellSize,a[0]*CellSize,CellSize,CellSize);
 
         for (int i=0;i<8;i++){
             for(int j=0;j<8;j++){
                 if(piece.isValidMove(i,j,board.getBoardArray())){
-                    if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].isWhite()!=piece.isWhite()) gc.setFill(Color.RED);
-                    if(board.getBoardArray()[i][j]==null) gc.setFill(Color.BLUE);
+                    if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].isWhite()!=piece.isWhite()) gc.setFill(Color.rgb(255, 0, 0, 0.4));
+                    if(board.getBoardArray()[i][j]==null) gc.setFill(Color.rgb(0, 191, 255, 0.4));
                     gc.fillRect(j*CellSize,i*CellSize,CellSize,CellSize);
                 }
             }
+        }
+
+        if(controller.isCheck(controller.getBoard().getBoardArray(),controller.isWhiteTurn())){
+            int[] King=controller.KingLocation(controller.getBoard().getBoardArray(),controller.isWhiteTurn());
+            gc.setFill(Color.web("#e07b00"));
+            gc.fillRect(King[1]*CellSize,King[0]*CellSize,CellSize,CellSize);
         }
 
     }
@@ -188,9 +195,18 @@ public class MapLoader {
     }
 
     public void DrawTurn(){
-        gc.setFill(Color.GOLD);
+        gc.setFill(Color.web("#4A6F8A"));
+        gc.setFont(new Font("Arial", 18));
         if(controller.isWhiteTurn()) gc.fillText("White Turn", 10,20);
         else gc.fillText("Black Turn", 10,20);
+        if(controller.isCheck(controller.getBoard().getBoardArray(),controller.isWhiteTurn())) {
+            if(controller.isWhiteTurn()){
+                gc.fillText("White is in Check", 10,40);
+            }
+            else{
+                gc.fillText("Black is in Check", 10,40);
+            }
+        }
     }
 
 
