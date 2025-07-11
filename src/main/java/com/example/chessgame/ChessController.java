@@ -32,36 +32,7 @@ public class ChessController {
 
         if(PieceSelected) {
             if(board.getBoardArray()[CellSelected[0]][CellSelected[1]].isValidMove(row,col,board.getBoardArray())) {
-                Piece TempBoardPiece[][] =new Piece[8][8];
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 8; j++) {
-                        if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].getClass() == King.class) {
-                            TempBoardPiece[i][j] = new King(board.getBoardArray()[i][j].isWhite(),i,j);
-                            continue;
-                        }
-                        if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].getClass() == Queen.class) {
-                            TempBoardPiece[i][j] = new Queen(board.getBoardArray()[i][j].isWhite(),i,j);
-                            continue;
-                        }
-                        if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].getClass() == Pawn.class) {
-                            TempBoardPiece[i][j] = new Pawn(board.getBoardArray()[i][j].isWhite(),i,j);
-                            continue;
-                        }
-                        if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].getClass() == Knight.class) {
-                            TempBoardPiece[i][j] = new Knight(board.getBoardArray()[i][j].isWhite(),i,j);
-                            continue;
-                        }
-                        if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].getClass() == Rook.class) {
-                            TempBoardPiece[i][j] = new Rook(board.getBoardArray()[i][j].isWhite(),i,j);
-                            continue;
-                        }
-                        if(board.getBoardArray()[i][j]!=null && board.getBoardArray()[i][j].getClass() == Bishop.class) {
-                            TempBoardPiece[i][j] = new Bishop(board.getBoardArray()[i][j].isWhite(),i,j);
-                            continue;
-                        }
-                        TempBoardPiece[i][j] = null;
-                    }
-                }
+                Piece TempBoardPiece[][] = CloneBoard(board.getBoardArray());
                 board.movePiece(CellSelected[0],CellSelected[1],row,col);
                 if(isCheck(board.getBoardArray(),whiteTurn)) {
                     board.SetBoardArray(TempBoardPiece);
@@ -136,5 +107,39 @@ public class ChessController {
 
     public void switchTurn() {
         whiteTurn = !whiteTurn;
+    }
+
+    public Piece[][] CloneBoard(Piece board[][]) {
+        Piece TempBoardPiece[][] = new Piece[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if(board[i][j]!=null && board[i][j].getClass() == King.class) {
+                    TempBoardPiece[i][j] = new King(board[i][j].isWhite(),i,j);
+                    continue;
+                }
+                if(board[i][j]!=null && board[i][j].getClass() == Queen.class) {
+                    TempBoardPiece[i][j] = new Queen(board[i][j].isWhite(),i,j);
+                    continue;
+                }
+                if(board[i][j]!=null && board[i][j].getClass() == Pawn.class) {
+                    TempBoardPiece[i][j] = new Pawn(board[i][j].isWhite(),i,j);
+                    continue;
+                }
+                if(board[i][j]!=null && board[i][j].getClass() == Knight.class) {
+                    TempBoardPiece[i][j] = new Knight(board[i][j].isWhite(),i,j);
+                    continue;
+                }
+                if(board[i][j]!=null && board[i][j].getClass() == Rook.class) {
+                    TempBoardPiece[i][j] = new Rook(board[i][j].isWhite(),i,j);
+                    continue;
+                }
+                if(board[i][j]!=null && board[i][j].getClass() == Bishop.class) {
+                    TempBoardPiece[i][j] = new Bishop(board[i][j].isWhite(),i,j);
+                    continue;
+                }
+                TempBoardPiece[i][j] = null;
+            }
+        }
+        return TempBoardPiece;
     }
 }
