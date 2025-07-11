@@ -2,11 +2,14 @@ package Map;
 
 import Models.*;
 import com.example.chessgame.ChessController;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -69,7 +72,19 @@ public class MapLoader {
 
             if (controller != null) {
                 controller.onCellClicked(row, col);
-                Update();
+                if (controller.isGameOver()) {
+                    Button button = new Button("Restart");
+                    button.setOnMousePressed(s -> {
+                        controller.getBoard().SetBoardArray(new Board().getBoardArray());
+                        controller.Restart(false);
+                        Update();
+                    });
+                    VBox overlay = new VBox(button);
+                    overlay.setAlignment(Pos.CENTER);
+                    ((Group) MapScene.getRoot()).getChildren().add(overlay);
+                } else {
+                    Update();
+                }
             }
         });
     }
@@ -197,14 +212,23 @@ public class MapLoader {
     public void DrawTurn(){
         gc.setFill(Color.web("#4A6F8A"));
         gc.setFont(new Font("Arial", 18));
-        if(controller.isWhiteTurn()) gc.fillText("White Turn", 10,20);
-        else gc.fillText("Black Turn", 10,20);
+        if(controller.isWhiteTurn()) gc.fillText("White Turn", 10,45);
+        else gc.fillText("Black Turn", 10,45);
         if(controller.isCheck(controller.getBoard().getBoardArray(),controller.isWhiteTurn())) {
             if(controller.isWhiteTurn()){
-                gc.fillText("White is in Check", 10,40);
+                gc.fillText("White is in Check", 10,65);
             }
             else{
-                gc.fillText("Black is in Check", 10,40);
+                gc.fillText("Black is in Check", 10,65);
+            }
+        }
+        gc.setFill(Color.RED);
+        if(controller.isCheckmate(controller.getBoard().getBoardArray(),controller.isWhiteTurn())){
+            if(controller.isWhiteTurn()){
+                gc.fillText("White is in Checkmate", 10,85);
+            }
+            else{
+                gc.fillText("Black is in Checkmate", 10,85);
             }
         }
     }
@@ -216,6 +240,14 @@ public class MapLoader {
         DrawMovePiece(controller.getBoard());
         DrawPieces(controller.getBoard());
         DrawTurn();
+    }
+
+
+
+    public void End(){
+        gc.setFill(Color.BLACK);
+        gc.setFont(new Font("Arial", 30));
+        gc.fillText("Win : " + controller.isWhiteTurn(), WIDTH/2, HEIGHT/2);
     }
 
 }

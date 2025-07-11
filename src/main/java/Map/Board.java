@@ -66,6 +66,9 @@ public class Board {
 
 
 
+
+
+
     }
 
     public void SetBoardArray(Piece[][] board) {

@@ -11,6 +11,7 @@ public class ChessController {
     private boolean whiteTurn = true;
     private boolean PieceSelected = false;
     private int[] CellSelected= {-1,-1};
+    private boolean GameOver = false;
 
 
 
@@ -21,7 +22,10 @@ public class ChessController {
 
 
     public void onCellClicked(int row, int col) {
-
+        if(isCheckmate(board.getBoardArray(),whiteTurn)) {
+            GameOver = true;
+            return;
+        }
         if(!PieceSelected && board.getBoardArray()[row][col]==null) return;
         if(board.getBoardArray()[row][col]!=null&& !PieceSelected && board.getBoardArray()[row][col].isWhite()!=whiteTurn) return;
         if(PieceSelected && board.getBoardArray()[row][col]!=null && board.getBoardArray()[row][col].isWhite()==whiteTurn) {
@@ -92,6 +96,29 @@ public class ChessController {
     }
 
 
+
+    public boolean isCheckmate(Piece board[][],boolean white) {
+        if(!isCheck(board,white)) return false;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if(board[i][j]==null || board[i][j].isWhite()!=white) continue;
+                for (int x = 0; x < board.length; x++) {
+                    for (int y = 0; y < board[x].length; y++) {
+                        if(board[i][j].isValidMove(x,y,board)){
+                            Piece piece[][] = CloneBoard(board);
+                            Board tempBoard = new Board();
+                            tempBoard.SetBoardArray(piece);
+                            tempBoard.movePiece(i,j,x,y);
+                            if(!isCheck(tempBoard.getBoardArray(),white)) return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
     public int[] getCellSelected(){
         if(PieceSelected)
             return CellSelected;
@@ -103,6 +130,14 @@ public class ChessController {
 
     public boolean isWhiteTurn() {
         return whiteTurn;
+    }
+
+    public boolean isGameOver() {
+        return GameOver;
+    }
+
+    public void Restart(boolean isGameOver) {
+        this.GameOver = isGameOver;
     }
 
     public void switchTurn() {
